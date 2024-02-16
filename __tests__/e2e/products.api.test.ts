@@ -6,9 +6,9 @@ describe("/products", () => {
     await request(app).delete("/__test__/data");
   });
 
-  afterAll(async () => {
-    server.close();
-  });
+  // afterAll(async () => {
+  //   server.close();
+  // });
 
   it("should return 200 and array with products", async () => {
     await request(app).get("/products").expect(HTTP_STATUSES.OK_200, []);
