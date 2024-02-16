@@ -1,8 +1,8 @@
 import express, { Request, Response, json } from "express";
-const app = express();
+export const app = express();
 const port = process.env.PORT || 3000;
 
-const HTTP_STATUSES = {
+export const HTTP_STATUSES = {
   OK_200: 200,
   CREATED_201: 201,
   NO_CONTENT_204: 204,
@@ -87,6 +87,11 @@ app.get("/addresses/:id", (req: Request, res: Response) => {
   }
 });
 
-app.listen(port, () => {
+app.delete("/__test__/data", (req, res) => {
+  db.products = [];
+  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+});
+
+export const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}!!!!!`);
 });
