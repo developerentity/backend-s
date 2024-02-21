@@ -1,4 +1,4 @@
-import { Response, Express } from "express";
+import express, { Response } from "express";
 import {
   RequestWithBody,
   RequestWithParams,
@@ -20,9 +20,11 @@ const getProductViewModel = (dbProduct: ProductType): ProductViewModel => {
   };
 };
 
-export const addProductsRoutes = (app: Express, db: DBType) => {
-  app.get(
-    "/products",
+export const getProductsRouter = (db: DBType) => {
+  const router = express.Router();
+
+  router.get(
+    "/",
     (
       req: RequestWithQuery<QueryProductModel>,
       res: Response<ProductViewModel[]>
@@ -38,8 +40,8 @@ export const addProductsRoutes = (app: Express, db: DBType) => {
       res.send(foundProducts.map(getProductViewModel));
     }
   );
-  app.get(
-    "/products/:id",
+  router.get(
+    "/:id",
     (
       req: RequestWithParams<URIParamsProductIDModel>,
       res: Response<ProductViewModel>
@@ -53,8 +55,8 @@ export const addProductsRoutes = (app: Express, db: DBType) => {
       }
     }
   );
-  app.post(
-    "/products",
+  router.post(
+    "/",
     (
       req: RequestWithBody<CreateProductModel>,
       res: Response<ProductViewModel>
@@ -74,8 +76,8 @@ export const addProductsRoutes = (app: Express, db: DBType) => {
         .send(getProductViewModel(createdProduct));
     }
   );
-  app.put(
-    "/products/:id",
+  router.put(
+    "/:id",
     (
       req: RequestWithParamsAndBody<
         URIParamsProductIDModel,
@@ -97,8 +99,8 @@ export const addProductsRoutes = (app: Express, db: DBType) => {
       }
     }
   );
-  app.delete(
-    "/products/:id",
+  router.delete(
+    "/:id",
     (req: RequestWithParams<URIParamsProductIDModel>, res: Response) => {
       for (let i = 0; i < db.products.length; i++) {
         if (db.products[i].id === +req.params.id) {
@@ -110,4 +112,6 @@ export const addProductsRoutes = (app: Express, db: DBType) => {
       res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
   );
+
+  return router;
 };

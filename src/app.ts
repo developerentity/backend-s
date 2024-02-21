@@ -1,14 +1,14 @@
 import express from "express";
-import { addProductsRoutes } from "./routes/productsRoutes";
-import { addAddressesRoutes } from "./routes/addressesRoutes";
-import { addTestsRoutes } from "./routes/testRoutes";
 import { db } from "./db/db";
+import { getProductsRouter } from "./routes/productsRouter";
+import { getAddressesRouter } from "./routes/addressesRouter";
+import { getTestsRouter } from "./routes/testRouter";
 
 export const app = express();
 
 const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
 
-addProductsRoutes(app, db);
-addAddressesRoutes(app, db);
-addTestsRoutes(app, db);
+app.use("/products", getProductsRouter(db));
+app.use("/addresses", getAddressesRouter(db));
+app.use("/__test__", getTestsRouter(db));
