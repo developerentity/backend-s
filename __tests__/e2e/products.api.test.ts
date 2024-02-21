@@ -1,16 +1,13 @@
 import request from "supertest";
-import { HTTP_STATUSES, app, server } from "../../src/index";
+import { app } from "../../src/app";
 import { CreateProductModel } from "../../src/models/CreateProductModel";
 import { UpdateProductModel } from "../../src/models/UpdateProductModel";
+import { HTTP_STATUSES } from "../../src/http_statuses";
 
 describe("/products", () => {
   beforeAll(async () => {
     await request(app).delete("/__test__/data");
   });
-
-  // afterAll(async () => {
-  //   server.close();
-  // });
 
   it("should return 200 and array with products", async () => {
     await request(app).get("/products").expect(HTTP_STATUSES.OK_200, []);
