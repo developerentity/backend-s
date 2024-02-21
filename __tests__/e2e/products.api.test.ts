@@ -1,5 +1,7 @@
 import request from "supertest";
 import { HTTP_STATUSES, app, server } from "../../src/index";
+import { CreateProductModel } from "../../src/models/CreateProductModel";
+import { UpdateProductModel } from "../../src/models/UpdateProductModel";
 
 describe("/products", () => {
   beforeAll(async () => {
@@ -21,9 +23,11 @@ describe("/products", () => {
   });
 
   it(`shouldn't create product with incorrect input data`, async () => {
+    const data: CreateProductModel = { title: "" };
+
     await request(app)
       .post("/products")
-      .send({ title: "" })
+      .send(data)
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     await request(app).get("/products").expect(HTTP_STATUSES.OK_200, []);
@@ -31,10 +35,11 @@ describe("/products", () => {
 
   let createdProduct1: any = null;
   let createdProduct2: any = null;
-  it(`should create product with incorrect input data`, async () => {
+  it(`should create product with correct input data`, async () => {
+    const data: CreateProductModel = { title: "new post testing" };
     const createResponse = await request(app)
       .post("/products")
-      .send({ title: "new post testing" })
+      .send(data)
       .expect(HTTP_STATUSES.CREATED_201);
 
     createdProduct1 = createResponse.body;
@@ -50,16 +55,17 @@ describe("/products", () => {
   });
 
   it(`should create one more product`, async () => {
+    const data: CreateProductModel = { title: "new post testing 2" };
     const createResponse = await request(app)
       .post("/products")
-      .send({ title: "new post testing" })
+      .send(data)
       .expect(HTTP_STATUSES.CREATED_201);
 
     createdProduct2 = createResponse.body;
 
     expect(createdProduct2).toEqual({
       id: expect.any(Number),
-      title: "new post testing",
+      title: data.title,
     });
 
     await request(app)
@@ -68,9 +74,11 @@ describe("/products", () => {
   });
 
   it(`shouldn't update product with incorrect input data`, async () => {
+    const data: CreateProductModel = { title: "" };
+
     await request(app)
       .put("/products/" + createdProduct1.id)
-      .send({ title: "" })
+      .send(data)
       .expect(HTTP_STATUSES.BAD_REQUEST_400);
 
     await request(app)
@@ -86,19 +94,18 @@ describe("/products", () => {
   });
 
   it(`should update product with correct input data`, async () => {
-    const updatedTitle = "updatedTitle";
+    const data: UpdateProductModel = { title: "Updated title" };
 
     await request(app)
       .put("/products/" + createdProduct1.id)
-      .send({ title: updatedTitle })
+      .send(data)
       .expect(HTTP_STATUSES.NO_CONTENT_204);
 
     await request(app)
       .get("/products/" + createdProduct1.id)
-      .send({ title: updatedTitle })
       .expect(HTTP_STATUSES.OK_200, {
         ...createdProduct1,
-        title: updatedTitle,
+        title: data.title,
       });
 
     await request(app)
