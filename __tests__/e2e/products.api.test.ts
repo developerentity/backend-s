@@ -3,6 +3,7 @@ import { app } from "../../src/app";
 import { CreateProductModel } from "../../src/models/CreateProductModel";
 import { UpdateProductModel } from "../../src/models/UpdateProductModel";
 import { HTTP_STATUSES } from "../../src/http_statuses";
+import { ProductViewModel } from "../../src/models/ProductViewModel";
 
 describe("/products", () => {
   beforeAll(async () => {
@@ -30,8 +31,8 @@ describe("/products", () => {
     await request(app).get("/products").expect(HTTP_STATUSES.OK_200, []);
   });
 
-  let createdProduct1: any = null;
-  let createdProduct2: any = null;
+  let createdProduct1: ProductViewModel;
+  let createdProduct2: ProductViewModel;
   it(`should create product with correct input data`, async () => {
     const data: CreateProductModel = { title: "new post testing" };
     const createResponse = await request(app)
@@ -93,10 +94,20 @@ describe("/products", () => {
   it(`should update product with correct input data`, async () => {
     const data: UpdateProductModel = { title: "Updated title" };
 
-    await request(app)
+    const createResponse = await request(app)
       .put("/products/" + createdProduct1.id)
       .send(data)
-      .expect(HTTP_STATUSES.NO_CONTENT_204);
+      .expect(HTTP_STATUSES.OK_200, {
+        ...createdProduct1,
+        title: data.title,
+      });
+
+    const updatedProduct = createResponse.body;
+
+    expect(updatedProduct).toEqual({
+      id: createdProduct1.id,
+      title: data.title,
+    });
 
     await request(app)
       .get("/products/" + createdProduct1.id)
