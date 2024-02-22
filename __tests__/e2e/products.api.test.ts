@@ -1,20 +1,20 @@
 import request from "supertest";
 import { app } from "../../src/app";
-import { CreateProductModel } from "../../src/models/CreateProductModel";
-import { UpdateProductModel } from "../../src/models/UpdateProductModel";
+import { CreateProductModel } from "../../src/models/products/CreateProductModel";
+import { UpdateProductModel } from "../../src/models/products/UpdateProductModel";
 import { HTTP_STATUSES } from "../../src/http_statuses";
-import { ProductViewModel } from "../../src/models/ProductViewModel";
+import { ProductViewModel } from "../../src/models/products/ProductViewModel";
 
 describe("/products", () => {
   beforeAll(async () => {
-    await request(app).delete("/__test__/data");
+    await request(app).delete("/__test__/products");
   });
 
-  it("should return 200 and array with products", async () => {
+  it("should return 200 and empty array", async () => {
     await request(app).get("/products").expect(HTTP_STATUSES.OK_200, []);
   });
 
-  it("should return 404 for not existing course", async () => {
+  it("should return 404 for not existing product", async () => {
     await request(app)
       .get("/products/444444444")
       .expect(HTTP_STATUSES.NOT_FOUND_404);
@@ -121,7 +121,7 @@ describe("/products", () => {
       .expect(HTTP_STATUSES.OK_200, createdProduct2);
   });
 
-  it("should delete both courses", async () => {
+  it("should delete both products", async () => {
     await request(app)
       .delete("/products/" + createdProduct1.id)
       .expect(HTTP_STATUSES.NO_CONTENT_204);

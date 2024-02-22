@@ -4,4 +4,7 @@ export const testsRepository = {
   clearProductsArray() {
     db.products = [];
   },
+  clearAddressesArray() {
+    db.addresses = [];
+  },
 };

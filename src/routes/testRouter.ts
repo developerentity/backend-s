@@ -4,8 +4,12 @@ import { testsRepository } from "../repositories/testsRepository";
 
 export const getTestsRouter = () => {
   const router = express.Router();
-  router.delete("/data", (_, res) => {
+  router.delete("/products", (_, res) => {
     testsRepository.clearProductsArray();
+    res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+  });
+  router.delete("/addresses", (_, res) => {
+    testsRepository.clearAddressesArray();
     res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
   });
 
