@@ -1,9 +1,9 @@
 import request from "supertest";
 import { app } from "../../src/app";
-import { CreateProductModel } from "../../src/models/CreateProductModel";
-import { UpdateProductModel } from "../../src/models/UpdateProductModel";
+import { CreateProductModel } from "../../src/models/products/CreateProductModel";
+import { UpdateProductModel } from "../../src/models/products/UpdateProductModel";
 import { HTTP_STATUSES } from "../../src/http_statuses";
-import { ProductViewModel } from "../../src/models/ProductViewModel";
+import { ProductViewModel } from "../../src/models/products/ProductViewModel";
 
 describe("/products", () => {
   beforeAll(async () => {

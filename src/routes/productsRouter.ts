@@ -5,11 +5,11 @@ import {
   RequestWithParamsAndBody,
   RequestWithQuery,
 } from "../types";
-import { CreateProductModel } from "../models/CreateProductModel";
-import { UpdateProductModel } from "../models/UpdateProductModel";
-import { QueryProductModel } from "../models/QueryProductModel";
-import { ProductViewModel } from "../models/ProductViewModel";
-import { URIParamsProductIDModel } from "../models/URIParamsProductIDModel";
+import { CreateProductModel } from "../models/products/CreateProductModel";
+import { UpdateProductModel } from "../models/products/UpdateProductModel";
+import { QueryProductModel } from "../models/products/QueryProductModel";
+import { ProductViewModel } from "../models/products/ProductViewModel";
+import { URIParamsProductIDModel } from "../models/products/URIParamsProductIDModel";
 import { HTTP_STATUSES } from "../http_statuses";
 import { productsRepository } from "../repositories/productsRepository";
 
