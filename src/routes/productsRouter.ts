@@ -10,17 +10,10 @@ import { UpdateProductModel } from "../models/UpdateProductModel";
 import { QueryProductModel } from "../models/QueryProductModel";
 import { ProductViewModel } from "../models/ProductViewModel";
 import { URIParamsProductIDModel } from "../models/URIParamsProductIDModel";
-import { DBType, ProductType } from "../db/db";
 import { HTTP_STATUSES } from "../http_statuses";
+import { productsRepository } from "../repositories/productsRepository";
 
-const getProductViewModel = (dbProduct: ProductType): ProductViewModel => {
-  return {
-    id: dbProduct.id,
-    title: dbProduct.title,
-  };
-};
-
-export const getProductsRouter = (db: DBType) => {
+export const getProductsRouter = () => {
   const router = express.Router();
 
   router.get(
@@ -29,15 +22,10 @@ export const getProductsRouter = (db: DBType) => {
       req: RequestWithQuery<QueryProductModel>,
       res: Response<ProductViewModel[]>
     ) => {
-      let foundProducts = db.products;
-
-      if (req.query.title) {
-        foundProducts = foundProducts.filter(
-          (p) => p.title.indexOf(req.query.title) > -1
-        );
-      }
-
-      res.send(foundProducts.map(getProductViewModel));
+      const foundProducts = productsRepository.findProducts(
+        req.query.title?.toString()
+      );
+      res.send(foundProducts);
     }
   );
   router.get(
@@ -46,10 +34,9 @@ export const getProductsRouter = (db: DBType) => {
       req: RequestWithParams<URIParamsProductIDModel>,
       res: Response<ProductViewModel>
     ) => {
-      let foundProduct = db.products.find((p) => p.id === +req.params.id);
-
+      const foundProduct = productsRepository.getProductById(+req.params.id);
       if (foundProduct) {
-        res.send(getProductViewModel(foundProduct));
+        res.send(foundProduct);
       } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
       }
@@ -65,15 +52,8 @@ export const getProductsRouter = (db: DBType) => {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
         return;
       }
-      const createdProduct: ProductType = {
-        id: +new Date(),
-        title: req.body.title,
-        price: 0,
-      };
-      db.products.push(createdProduct);
-      res
-        .status(HTTP_STATUSES.CREATED_201)
-        .send(getProductViewModel(createdProduct));
+      const createdProduct = productsRepository.createProduct(req.body.title);
+      res.status(HTTP_STATUSES.CREATED_201).send(createdProduct);
     }
   );
   router.put(
@@ -89,11 +69,13 @@ export const getProductsRouter = (db: DBType) => {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
         return;
       }
-
-      let product = db.products.find((p) => p.id === +req.params.id);
-      if (product) {
-        product.title = req.body.title;
-        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+      const isUpdated = productsRepository.updateProduct(
+        +req.params.id,
+        req.body.title
+      );
+      if (isUpdated) {
+        const product = productsRepository.getProductById(+req.params.id);
+        res.send(product);
       } else {
         res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
       }
@@ -102,14 +84,12 @@ export const getProductsRouter = (db: DBType) => {
   router.delete(
     "/:id",
     (req: RequestWithParams<URIParamsProductIDModel>, res: Response) => {
-      for (let i = 0; i < db.products.length; i++) {
-        if (db.products[i].id === +req.params.id) {
-          db.products.splice(i, 1);
-          res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
-          return;
-        }
+      const isDeleted = productsRepository.deleteProduct(+req.params.id);
+      if (isDeleted) {
+        res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
+      } else {
+        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
       }
-      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
   );
 
