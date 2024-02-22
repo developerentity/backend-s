@@ -7,7 +7,7 @@ import { ProductViewModel } from "../../src/models/ProductViewModel";
 
 describe("/products", () => {
   beforeAll(async () => {
-    await request(app).delete("/__test__/data");
+    await request(app).delete("/__test__/products");
   });
 
   it("should return 200 and array with products", async () => {
