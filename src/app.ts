@@ -9,5 +9,5 @@ const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
 
 app.use("/products", getProductsRouter());
-// app.use("/addresses", getAddressesRouter(db));
+app.use("/addresses", getAddressesRouter());
 app.use("/__test__", getTestsRouter());
