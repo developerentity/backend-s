@@ -12,6 +12,8 @@ import { ProductViewModel } from "../models/products/ProductViewModel";
 import { URIParamsProductIDModel } from "../models/products/URIParamsProductIDModel";
 import { HTTP_STATUSES } from "../http_statuses";
 import { productsRepository } from "../repositories/productsRepository";
+import { titleValidator } from "../validators/titleValidator";
+import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
 
 export const getProductsRouter = () => {
   const router = express.Router();
@@ -44,6 +46,8 @@ export const getProductsRouter = () => {
   );
   router.post(
     "/",
+    titleValidator,
+    inputValidationMiddleware,
     (
       req: RequestWithBody<CreateProductModel>,
       res: Response<ProductViewModel>
@@ -58,6 +62,8 @@ export const getProductsRouter = () => {
   );
   router.put(
     "/:id",
+    titleValidator,
+    inputValidationMiddleware,
     (
       req: RequestWithParamsAndBody<
         URIParamsProductIDModel,
