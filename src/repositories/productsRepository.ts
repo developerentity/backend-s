@@ -1,6 +1,7 @@
-import { ProductType, db } from "../db/db";
+import { db } from "../db/db";
 import { ProductViewModel } from "../models/products/ProductViewModel";
 import { getProductViewModel } from "../utils/getProductViewModel";
+import { ProductType } from "./db";
 
 export const productsRepository = {
   async findProducts(

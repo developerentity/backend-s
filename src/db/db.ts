@@ -1,8 +1,4 @@
-export type ProductType = {
-  id: number;
-  title: string;
-  price: number;
-};
+import { ProductType } from "../repositories/db";
 
 export type AddressType = {
   id: number;
