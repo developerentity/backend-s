@@ -1,8 +1,11 @@
 import { ProductType, db } from "../db/db";
+import { ProductViewModel } from "../models/products/ProductViewModel";
 import { getProductViewModel } from "../utils/getProductViewModel";
 
 export const productsRepository = {
-  findProducts(title: string | undefined | null) {
+  async findProducts(
+    title: string | undefined | null
+  ): Promise<ProductViewModel[]> {
     if (title) {
       const foundProducts = db.products
         .filter((p) => p.title.indexOf(title) > -1)
@@ -12,11 +15,11 @@ export const productsRepository = {
       return db.products.map(getProductViewModel);
     }
   },
-  getProductById(id: number) {
+  async getProductById(id: number): Promise<ProductViewModel | null> {
     const foundProduct = db.products.find((p) => p.id === id);
     return foundProduct ? getProductViewModel(foundProduct) : null;
   },
-  createProduct(title: string) {
+  async createProduct(title: string): Promise<ProductViewModel> {
     const createdProduct: ProductType = {
       id: +new Date(),
       title: title,
@@ -25,7 +28,7 @@ export const productsRepository = {
     db.products.push(createdProduct);
     return getProductViewModel(createdProduct);
   },
-  updateProduct(id: number, title: string) {
+  async updateProduct(id: number, title: string): Promise<boolean> {
     let product = db.products.find((p) => p.id === id);
     if (product) {
       product.title = title;
@@ -34,7 +37,7 @@ export const productsRepository = {
       return false;
     }
   },
-  deleteProduct(id: number) {
+  async deleteProduct(id: number): Promise<boolean> {
     for (let i = 0; i < db.products.length; i++) {
       if (db.products[i].id === id) {
         db.products.splice(i, 1);

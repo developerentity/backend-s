@@ -34,7 +34,7 @@ describe("/products", () => {
   let createdProduct1: ProductViewModel;
   let createdProduct2: ProductViewModel;
   it(`should create product with correct input data`, async () => {
-    const data: CreateProductModel = { title: "new post testing" };
+    const data: CreateProductModel = { title: "new post" };
     const createResponse = await request(app)
       .post("/products")
       .send(data)
@@ -44,7 +44,7 @@ describe("/products", () => {
 
     expect(createdProduct1).toEqual({
       id: expect.any(Number),
-      title: "new post testing",
+      title: data.title,
     });
 
     await request(app)
@@ -53,7 +53,7 @@ describe("/products", () => {
   });
 
   it(`should create one more product`, async () => {
-    const data: CreateProductModel = { title: "new post testing 2" };
+    const data: CreateProductModel = { title: "new post 2" };
     const createResponse = await request(app)
       .post("/products")
       .send(data)
@@ -92,7 +92,7 @@ describe("/products", () => {
   });
 
   it(`should update product with correct input data`, async () => {
-    const data: UpdateProductModel = { title: "Updated title" };
+    const data: UpdateProductModel = { title: "Updated" };
 
     const createResponse = await request(app)
       .put("/products/" + createdProduct1.id)
