@@ -11,7 +11,7 @@ import { QueryProductModel } from "../models/products/QueryProductModel";
 import { ProductViewModel } from "../models/products/ProductViewModel";
 import { URIParamsProductIDModel } from "../models/products/URIParamsProductIDModel";
 import { HTTP_STATUSES } from "../http_statuses";
-import { productsRepository } from "../repositories/productsRepository";
+import { productsRepository } from "../repositories/productsRepositoryDB";
 import { titleValidator } from "../validators/titleValidator";
 import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
 

@@ -1,5 +1,5 @@
-import { ProductType } from "../db/db";
 import { ProductViewModel } from "../models/products/ProductViewModel";
+import { ProductType } from "../repositories/db";
 
 export const getProductViewModel = (
   dbProduct: ProductType
