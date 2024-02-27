@@ -11,9 +11,9 @@ import { QueryProductModel } from "../models/products/QueryProductModel";
 import { ProductViewModel } from "../models/products/ProductViewModel";
 import { URIParamsProductIDModel } from "../models/products/URIParamsProductIDModel";
 import { HTTP_STATUSES } from "../http_statuses";
-import { productsRepository } from "../repositories/productsRepositoryDB";
 import { titleValidator } from "../validators/titleValidator";
 import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
+import { productsService } from "../domain/productsService";
 
 export const getProductsRouter = () => {
   const router = express.Router();
@@ -25,7 +25,7 @@ export const getProductsRouter = () => {
       res: Response<ProductViewModel[]>
     ) => {
       const foundProducts: ProductViewModel[] =
-        await productsRepository.findProducts(req.query.title?.toString());
+        await productsService.findProducts(req.query.title?.toString());
       res.send(foundProducts);
     }
   );
@@ -36,7 +36,7 @@ export const getProductsRouter = () => {
       res: Response<ProductViewModel>
     ) => {
       const foundProduct: ProductViewModel | null =
-        await productsRepository.getProductById(+req.params.id);
+        await productsService.getProductById(+req.params.id);
       if (foundProduct) {
         res.send(foundProduct);
       } else {
@@ -57,7 +57,7 @@ export const getProductsRouter = () => {
         return;
       }
       const createdProduct: ProductViewModel =
-        await productsRepository.createProduct(req.body.title);
+        await productsService.createProduct(req.body.title);
       res.status(HTTP_STATUSES.CREATED_201).send(createdProduct);
     }
   );
@@ -76,12 +76,12 @@ export const getProductsRouter = () => {
         res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
         return;
       }
-      const isUpdated: boolean = await productsRepository.updateProduct(
+      const isUpdated: boolean = await productsService.updateProduct(
         +req.params.id,
         req.body.title
       );
       const product: ProductViewModel | null =
-        await productsRepository.getProductById(+req.params.id);
+        await productsService.getProductById(+req.params.id);
 
       if (isUpdated && product) {
         res.send(product);
@@ -93,7 +93,7 @@ export const getProductsRouter = () => {
   router.delete(
     "/:id",
     async (req: RequestWithParams<URIParamsProductIDModel>, res: Response) => {
-      const isDeleted: boolean = await productsRepository.deleteProduct(
+      const isDeleted: boolean = await productsService.deleteProduct(
         +req.params.id
       );
       if (isDeleted) {

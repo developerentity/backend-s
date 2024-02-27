@@ -19,21 +19,11 @@ export const productsRepository = {
       id: id,
     });
 
-    if (product) {
-      return product;
-    } else {
-      return null;
-    }
+    return product;
   },
-  async createProduct(title: string): Promise<ProductViewModel> {
-    const createdProduct: ProductType = {
-      id: +new Date(),
-      title: title,
-      price: 0,
-    };
-    let result = await productsCollection.insertOne(createdProduct);
-
-    return createdProduct;
+  async createProduct(newProduct: ProductType): Promise<ProductViewModel> {
+    const result = await productsCollection.insertOne(newProduct);
+    return newProduct;
   },
   async updateProduct(id: number, title: string): Promise<boolean> {
     let result = await productsCollection.updateOne(
