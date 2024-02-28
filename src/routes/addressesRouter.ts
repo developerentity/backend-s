@@ -6,34 +6,32 @@ import { QueryAddressModel } from "../models/addresses/QueryAddressModel";
 import { AddressViewModel } from "../models/addresses/AddressViewMode";
 import { URIParamsAddressIDModel } from "../models/addresses/URIParamsAddressIDModel";
 
-export const getAddressesRouter = () => {
-  const router = express.Router();
-  router.get(
-    "/",
-    (
-      req: RequestWithQuery<QueryAddressModel>,
-      res: Response<AddressViewModel[]>
-    ) => {
-      const foundAddresses = addressesRepository.findAddresses(
-        req.query.value?.toString()
-      );
-      res.send(foundAddresses);
+const router = express.Router({});
+router.get(
+  "/",
+  (
+    req: RequestWithQuery<QueryAddressModel>,
+    res: Response<AddressViewModel[]>
+  ) => {
+    const foundAddresses = addressesRepository.findAddresses(
+      req.query.value?.toString()
+    );
+    res.send(foundAddresses);
+  }
+);
+router.get(
+  "/:id",
+  (
+    req: RequestWithParams<URIParamsAddressIDModel>,
+    res: Response<AddressViewModel>
+  ) => {
+    const foundAddress = addressesRepository.getAddressById(+req.params.id);
+    if (foundAddress) {
+      res.send(foundAddress);
+    } else {
+      res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     }
-  );
-  router.get(
-    "/:id",
-    (
-      req: RequestWithParams<URIParamsAddressIDModel>,
-      res: Response<AddressViewModel>
-    ) => {
-      const foundAddress = addressesRepository.getAddressById(+req.params.id);
-      if (foundAddress) {
-        res.send(foundAddress);
-      } else {
-        res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
-      }
-    }
-  );
+  }
+);
 
-  return router;
-};
+export default router;
