@@ -14,6 +14,11 @@ import { HTTP_STATUSES } from "../http_statuses";
 import { titleValidator } from "../validators/titleValidator";
 import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
 import { productsService } from "../domain/productsService";
+import { productsQueryRepo } from "../repositories/productsQueryRepo";
+
+/**
+ * This is the Presentation Layer
+ */
 
 const router = express.Router({});
 
@@ -24,7 +29,7 @@ router.get(
     res: Response<ProductViewModel[]>
   ) => {
     const foundProducts: ProductViewModel[] =
-      await productsService.findProducts(req.query.title?.toString());
+      await productsQueryRepo.findProducts(req.query.title?.toString());
     res.send(foundProducts);
   }
 );
@@ -35,7 +40,7 @@ router.get(
     res: Response<ProductViewModel>
   ) => {
     const foundProduct: ProductViewModel | null =
-      await productsService.getProductById(+req.params.id);
+      await productsQueryRepo.getProductById(+req.params.id);
     if (foundProduct) {
       res.send(foundProduct);
     } else {
@@ -77,7 +82,7 @@ router.put(
       req.body.title
     );
     const product: ProductViewModel | null =
-      await productsService.getProductById(+req.params.id);
+      await productsQueryRepo.getProductById(+req.params.id);
 
     if (isUpdated && product) {
       res.send(product);
