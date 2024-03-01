@@ -8,7 +8,10 @@ import {
 import { CreateProductModel } from "../models/products/CreateProductModel";
 import { UpdateProductModel } from "../models/products/UpdateProductModel";
 import { QueryProductModel } from "../models/products/QueryProductModel";
-import { ProductViewModel } from "../models/products/ProductViewModel";
+import {
+  ProductViewModel,
+  ProductsListViewModel,
+} from "../models/products/ProductViewModel";
 import { URIParamsProductIDModel } from "../models/products/URIParamsProductIDModel";
 import { HTTP_STATUSES } from "../http_statuses";
 import { titleValidator } from "../validators/titleValidator";
@@ -26,10 +29,14 @@ router.get(
   "/",
   async (
     req: RequestWithQuery<QueryProductModel>,
-    res: Response<ProductViewModel[]>
+    res: Response<ProductsListViewModel>
   ) => {
-    const foundProducts: ProductViewModel[] =
-      await productsQueryRepo.findProducts(req.query.title?.toString());
+    const foundProducts: ProductsListViewModel =
+      await productsQueryRepo.findProducts({
+        limit: +req.query.pageSize,
+        page: +req.query.pageNumber,
+        title: req.query.title?.toString(),
+      });
     res.send(foundProducts);
   }
 );

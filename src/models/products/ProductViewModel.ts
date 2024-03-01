@@ -8,3 +8,10 @@ export type ProductViewModel = {
    */
   title: string;
 };
+
+export type ProductsListViewModel = {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  items: ProductViewModel[];
+};
