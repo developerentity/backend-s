@@ -7,18 +7,40 @@ import { getProductViewModel } from "../utils/getProductViewModel";
  * Which is responsible for Read only operations.
  */
 export const productsQueryRepo = {
-  async findProducts(
-    title: string | undefined | null
-  ): Promise<ProductViewModel[]> {
-    const filter: any = {};
+  async findProducts(queryParams: {
+    limit: number;
+    page: number;
+    title: string;
+  }): Promise<{
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    items: ProductViewModel[];
+  }> {
+    const limit = queryParams.limit || 10;
+    const page = queryParams.page || 1;
+    const title = queryParams.title;
 
+    let query: any = {};
     if (title) {
-      filter.title = { $regex: title };
+      query.title = { $regex: title, $options: "i" };
     }
 
-    const foundProducts = await productsCollection.find(filter).toArray();
+    const totalProducts = await productsCollection.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / limit);
 
-    return foundProducts.map(getProductViewModel);
+    const products = await productsCollection
+      .find(query)
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .toArray();
+
+    return {
+      totalItems: totalProducts,
+      totalPages: totalPages,
+      currentPage: page,
+      items: products.map(getProductViewModel),
+    };
   },
   async getProductById(id: number): Promise<ProductViewModel | null> {
     let product: ProductType | null = await productsCollection.findOne({
