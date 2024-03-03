@@ -36,6 +36,8 @@ router.get(
         limit: +req.query.pageSize,
         page: +req.query.pageNumber,
         title: req.query.title?.toString(),
+        sortField: req.query.sortField,
+        sortOrder: req.query.sortOrder,
       });
     res.send(foundProducts);
   }

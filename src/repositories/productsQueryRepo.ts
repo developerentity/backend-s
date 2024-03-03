@@ -11,6 +11,8 @@ export const productsQueryRepo = {
     limit: number;
     page: number;
     title: string;
+    sortField: string;
+    sortOrder: string;
   }): Promise<{
     totalItems: number;
     totalPages: number;
@@ -20,6 +22,8 @@ export const productsQueryRepo = {
     const limit = queryParams.limit || 10;
     const page = queryParams.page || 1;
     const title = queryParams.title;
+    const sortField = queryParams.sortField || "createdAt";
+    const sortOrder = queryParams.sortOrder === "desc" ? -1 : 1;
 
     let query: any = {};
     if (title) {
@@ -31,6 +35,7 @@ export const productsQueryRepo = {
 
     const products = await productsCollection
       .find(query)
+      .sort({ [sortField]: sortOrder })
       .skip((page - 1) * limit)
       .limit(limit)
       .toArray();

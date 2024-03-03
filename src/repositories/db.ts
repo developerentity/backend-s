@@ -4,6 +4,7 @@ export type ProductType = {
   id: number;
   title: string;
   price: number;
+  createdAt: number;
 };
 
 const mongoDB = process.env.mongoURI || "mongodb://0.0.0.0:27017";

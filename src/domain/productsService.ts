@@ -1,6 +1,7 @@
 import { ProductViewModel } from "../models/products/ProductViewModel";
 import { ProductType } from "../repositories/db";
 import { productsRepo } from "../repositories/productsRepo";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  *  This is a BLL (Business Logic Layer).
@@ -9,7 +10,8 @@ import { productsRepo } from "../repositories/productsRepo";
 export const productsService = {
   async createProduct(title: string): Promise<ProductViewModel> {
     const newProduct: ProductType = {
-      id: +new Date(),
+      id: +uuidv4(),
+      createdAt: +new Date(),
       title: title,
       price: 0,
     };
