@@ -13,19 +13,21 @@ export const usersService = {
     email: string,
     password: string
   ): Promise<boolean> {
-    const passwordSalt = await bcrypt.genSalt(10);
-    const passwordHash = await this._generateHash(password, passwordSalt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser: UserDBType = {
       _id: new ObjectId(),
       userName: login,
       email,
-      passwordHash,
-      passwordSalt,
+      password: hashedPassword,
       createdAt: new Date(),
     };
 
     return usersRepo.createUser(newUser);
+  },
+  async findUserById(id: ObjectId): Promise<UserDBType | null> {
+    return usersRepo.findUserById(id);
   },
   async checkCredentials(
     loginOrEmail: string,
@@ -33,14 +35,18 @@ export const usersService = {
   ): Promise<boolean> {
     const user = await usersRepo.findByLoginOrEmail(loginOrEmail);
     if (!user) return false;
-    const passwordHash = await this._generateHash(password, user.passwordSalt);
-    if (user.passwordHash !== passwordHash) return false;
-    return true;
-  },
-  _generateHash(password: string, salt: string) {
-    const hash = bcrypt.hash(password, salt);
-    console.log("Hash: " + hash);
-    return hash;
+
+    const storedHashedPassword = user.password;
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      storedHashedPassword
+    );
+
+    if (isPasswordValid) {
+      return true;
+    } else {
+      return false;
+    }
   },
 };
 
@@ -48,7 +54,6 @@ export type UserDBType = {
   _id: ObjectId;
   userName: string;
   email: string;
-  passwordHash: string;
-  passwordSalt: string;
+  password: string;
   createdAt: Date;
 };

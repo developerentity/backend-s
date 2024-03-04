@@ -15,6 +15,6 @@ authRouter.post("/", async (req: Request, res: Response) => {
   } else {
     return res
       .status(HTTP_STATUSES.UNAUTHORIZED_401)
-      .json({ message: "Wrong user name or password" });
+      .json({ error: "Invalid credentials" });
   }
 });
