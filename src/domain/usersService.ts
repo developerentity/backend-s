@@ -18,7 +18,7 @@ export const usersService = {
 
     const newUser: UserDBType = {
       _id: new ObjectId(),
-      userName: login,
+      username: login,
       email,
       password: hashedPassword,
       createdAt: new Date(),
@@ -52,7 +52,7 @@ export const usersService = {
 
 export type UserDBType = {
   _id: ObjectId;
-  userName: string;
+  username: string;
   email: string;
   password: string;
   createdAt: Date;

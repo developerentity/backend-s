@@ -21,7 +21,7 @@ export const usersRepo = {
   },
   async findByLoginOrEmail(loginOrEmail: string): Promise<UserDBType | null> {
     const user = await usersCollection.findOne({
-      $or: [{ email: loginOrEmail }, { userName: loginOrEmail }],
+      $or: [{ email: loginOrEmail }, { username: loginOrEmail }],
     });
     return user;
   },
