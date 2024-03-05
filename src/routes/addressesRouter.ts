@@ -6,8 +6,9 @@ import { QueryAddressModel } from "../models/addresses/QueryAddressModel";
 import { AddressViewModel } from "../models/addresses/AddressViewMode";
 import { URIParamsAddressIDModel } from "../models/addresses/URIParamsAddressIDModel";
 
-const router = express.Router({});
-router.get(
+export const addressesRouter = express.Router({});
+
+addressesRouter.get(
   "/",
   (
     req: RequestWithQuery<QueryAddressModel>,
@@ -19,7 +20,7 @@ router.get(
     res.send(foundAddresses);
   }
 );
-router.get(
+addressesRouter.get(
   "/:id",
   (
     req: RequestWithParams<URIParamsAddressIDModel>,
@@ -33,5 +34,3 @@ router.get(
     }
   }
 );
-
-export default router;

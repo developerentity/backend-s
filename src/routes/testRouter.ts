@@ -2,14 +2,13 @@ import express from "express";
 import { HTTP_STATUSES } from "../http_statuses";
 import { testsRepository } from "../repositories/testsRepository";
 
-const router = express.Router({});
-router.delete("/products", (_, res) => {
+export const testRouter = express.Router({});
+
+testRouter.delete("/products", (_, res) => {
   testsRepository.clearProductsArray();
   res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 });
-router.delete("/addresses", (_, res) => {
+testRouter.delete("/addresses", (_, res) => {
   testsRepository.clearAddressesArray();
   res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 });
-
-export default router;
