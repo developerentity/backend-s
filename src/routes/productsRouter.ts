@@ -22,10 +22,9 @@ import { productsQueryRepo } from "../repositories/productsQueryRepo";
 /**
  * This is the Presentation Layer
  */
+export const productsRouter = express.Router({});
 
-const router = express.Router({});
-
-router.get(
+productsRouter.get(
   "/",
   async (
     req: RequestWithQuery<QueryProductModel>,
@@ -42,7 +41,7 @@ router.get(
     res.send(foundProducts);
   }
 );
-router.get(
+productsRouter.get(
   "/:id",
   async (
     req: RequestWithParams<URIParamsProductIDModel>,
@@ -57,7 +56,7 @@ router.get(
     }
   }
 );
-router.post(
+productsRouter.post(
   "/",
   titleValidator,
   inputValidationMiddleware,
@@ -74,7 +73,7 @@ router.post(
     res.status(HTTP_STATUSES.CREATED_201).send(createdProduct);
   }
 );
-router.put(
+productsRouter.put(
   "/:id",
   titleValidator,
   inputValidationMiddleware,
@@ -100,7 +99,7 @@ router.put(
     }
   }
 );
-router.delete(
+productsRouter.delete(
   "/:id",
   async (req: RequestWithParams<URIParamsProductIDModel>, res: Response) => {
     const isDeleted: boolean = await productsService.deleteProduct(
@@ -113,5 +112,3 @@ router.delete(
     }
   }
 );
-
-export default router;
