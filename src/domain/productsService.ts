@@ -1,7 +1,8 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { ProductViewModel } from "../models/products/ProductViewModel";
 import { ProductType } from "../repositories/db";
 import { productsRepo } from "../repositories/productsRepo";
-import { v4 as uuidv4 } from "uuid";
 
 /**
  *  This is a BLL (Business Logic Layer).
