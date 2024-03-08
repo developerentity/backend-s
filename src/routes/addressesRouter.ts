@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
+
 import { HTTP_STATUSES } from "../http_statuses";
 import { addressesRepository } from "../repositories/addressesRepository";
 import { RequestWithParams, RequestWithQuery } from "../types";
