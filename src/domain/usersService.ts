@@ -12,7 +12,7 @@ export const usersService = {
     login: string,
     email: string,
     password: string
-  ): Promise<UserDBType> {
+  ): Promise<UserDBType | null> {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
