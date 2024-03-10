@@ -7,13 +7,27 @@ import { createValidator } from "../validators/createValidator";
 import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
 import { SECRET_ACCESS_TOKEN } from "../config";
 import { usersQueryRepo } from "../repositories/usersQueryRepo";
+import { UsersListViewModel } from "../models/users/UserViewModel";
+import { RequestWithQuery } from "../types";
+import { QueryUsersModel } from "../models/users/QueryUsersModel";
 
 export const usersRouter = Router({});
 
-usersRouter.get("/get-users", async (req: Request, res: Response) => {
-  // const foundUsers = await usersQueryRepo.getAllUsers();
-  // res.send(foundUsers);
-});
+usersRouter.get(
+  "/get-users",
+  async (
+    req: RequestWithQuery<QueryUsersModel>,
+    res: Response<UsersListViewModel>
+  ) => {
+    const foundUsers: UsersListViewModel = await usersQueryRepo.getAllUsers({
+      limit: +req.query.pageSize,
+      page: +req.query.pageNumber,
+      sortField: req.query.sortField,
+      sortOrder: req.query.sortOrder,
+    });
+    res.send(foundUsers);
+  }
+);
 usersRouter.post(
   "/signup",
   createValidator,
