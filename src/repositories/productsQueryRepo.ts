@@ -1,4 +1,7 @@
-import { ProductViewModel } from "../models/products/ProductViewModel";
+import {
+  ProductViewModel,
+  ProductsListViewModel,
+} from "../models/products/ProductViewModel";
 import { ProductType, productsCollection } from "./db";
 import { getProductViewModel } from "../utils/getProductViewModel";
 
@@ -13,12 +16,7 @@ export const productsQueryRepo = {
     title: string;
     sortField: string;
     sortOrder: string;
-  }): Promise<{
-    totalItems: number;
-    totalPages: number;
-    currentPage: number;
-    items: ProductViewModel[];
-  }> {
+  }): Promise<ProductsListViewModel> {
     const limit = queryParams.limit || 10;
     const page = queryParams.page || 1;
     const title = queryParams.title;
