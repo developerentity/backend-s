@@ -18,6 +18,7 @@ import { titleValidator } from "../validators/titleValidator";
 import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
 import { productsService } from "../domain/productsService";
 import { productsQueryRepo } from "../repositories/productsQueryRepo";
+import { basicTokenValidator } from "../middlewares/basicTokenValidator";
 
 /**
  * This is the Presentation Layer
@@ -26,6 +27,7 @@ export const productsRouter = express.Router({});
 
 productsRouter.get(
   "/",
+  basicTokenValidator,
   async (
     req: RequestWithQuery<QueryProductModel>,
     res: Response<ProductsListViewModel>
@@ -43,6 +45,7 @@ productsRouter.get(
 );
 productsRouter.get(
   "/:id",
+  basicTokenValidator,
   async (
     req: RequestWithParams<URIParamsProductIDModel>,
     res: Response<ProductViewModel>
@@ -58,6 +61,7 @@ productsRouter.get(
 );
 productsRouter.post(
   "/",
+  basicTokenValidator,
   titleValidator,
   inputValidationMiddleware,
   async (
@@ -75,6 +79,7 @@ productsRouter.post(
 );
 productsRouter.put(
   "/:id",
+  basicTokenValidator,
   titleValidator,
   inputValidationMiddleware,
   async (
@@ -101,6 +106,7 @@ productsRouter.put(
 );
 productsRouter.delete(
   "/:id",
+  basicTokenValidator,
   async (req: RequestWithParams<URIParamsProductIDModel>, res: Response) => {
     const isDeleted: boolean = await productsService.deleteProduct(
       +req.params.id

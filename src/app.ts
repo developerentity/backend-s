@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 
 import { usersRouter } from "./routes/usersRouter";
 import { authRouter } from "./routes/authRouter";
@@ -8,11 +9,11 @@ import { testRouter } from "./routes/testRouter";
 
 export const app = express();
 
-const jsonBodyMiddleware = express.json();
-app.use(jsonBodyMiddleware);
+app.use(express.json());
+app.use(cookieParser());
 
 app.use("/users", usersRouter);
-app.use("/login", authRouter);
+app.use("/auth", authRouter);
 app.use("/products", productsRouter);
 app.use("/addresses", addressesRouter);
 app.use("/__test__", testRouter);

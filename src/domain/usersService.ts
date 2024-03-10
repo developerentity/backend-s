@@ -12,7 +12,7 @@ export const usersService = {
     login: string,
     email: string,
     password: string
-  ): Promise<boolean> {
+  ): Promise<UserDBType | null> {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -22,6 +22,7 @@ export const usersService = {
       email,
       password: hashedPassword,
       createdAt: new Date(),
+      role: "basic",
     };
 
     return usersRepo.createUser(newUser);
@@ -32,9 +33,9 @@ export const usersService = {
   async checkCredentials(
     loginOrEmail: string,
     password: string
-  ): Promise<boolean> {
+  ): Promise<UserDBType | null> {
     const user = await usersRepo.findByLoginOrEmail(loginOrEmail);
-    if (!user) return false;
+    if (!user) return null;
 
     const storedHashedPassword = user.password;
     const isPasswordValid = await bcrypt.compare(
@@ -43,9 +44,9 @@ export const usersService = {
     );
 
     if (isPasswordValid) {
-      return true;
+      return user;
     } else {
-      return false;
+      return null;
     }
   },
 };
@@ -56,4 +57,5 @@ export type UserDBType = {
   email: string;
   password: string;
   createdAt: Date;
+  role: "admin" | "basic";
 };

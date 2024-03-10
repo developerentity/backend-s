@@ -1,24 +1,59 @@
 import { Request, Router, Response } from "express";
+import jwt from "jsonwebtoken";
 
 import { usersService } from "../domain/usersService";
 import { HTTP_STATUSES } from "../http_statuses";
-import { usersRepo } from "../repositories/usersRepo";
 import { createValidator } from "../validators/createValidator";
 import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
+import { SECRET_ACCESS_TOKEN } from "../config";
+import { usersQueryRepo } from "../repositories/usersQueryRepo";
+import { UsersListViewModel } from "../models/users/UserViewModel";
+import { RequestWithQuery } from "../types";
+import { QueryUsersModel } from "../models/users/QueryUsersModel";
 
 export const usersRouter = Router({});
 
-usersRouter.get("/", async (req: Request, res: Response) => {
-  const foundUsers = await usersRepo.getAllUsers();
-  res.send(foundUsers);
-});
+usersRouter.get(
+  "/get-users",
+  async (
+    req: RequestWithQuery<QueryUsersModel>,
+    res: Response<UsersListViewModel>
+  ) => {
+    const foundUsers: UsersListViewModel = await usersQueryRepo.getAllUsers({
+      limit: +req.query.pageSize,
+      page: +req.query.pageNumber,
+      sortField: req.query.sortField,
+      sortOrder: req.query.sortOrder,
+    });
+    res.send(foundUsers);
+  }
+);
 usersRouter.post(
-  "/",
+  "/signup",
   createValidator,
   inputValidationMiddleware,
   async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
-    const newUser = await usersService.createUser(username, email, password);
-    res.status(HTTP_STATUSES.CREATED_201).send(newUser);
+    const user = await usersService.createUser(username, email, password);
+    if (user) {
+      const maxAge = 3 * 60 * 60;
+      const token = jwt.sign(
+        { id: user._id, email, role: user.role },
+        SECRET_ACCESS_TOKEN!,
+        { expiresIn: maxAge }
+      );
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: maxAge * 1000,
+      });
+      res.status(HTTP_STATUSES.CREATED_201).json({
+        message: "User successfully Registered and Logged in",
+        user: user._id,
+      });
+    } else {
+      res.status(HTTP_STATUSES.UNPROCESSABLE_CONTENT_422).json({
+        message: "Register failed",
+      });
+    }
   }
 );
