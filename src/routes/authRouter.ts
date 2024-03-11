@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { usersService } from "../domain/usersService";
 import { HTTP_STATUSES } from "../http_statuses";
 import { loginValidator } from "../validators/loginValidator";
-import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
+import { Validate } from "../middlewares/Validate";
 import { SECRET_ACCESS_TOKEN } from "../config";
 
 export const authRouter = Router({});
@@ -12,7 +12,7 @@ export const authRouter = Router({});
 authRouter.post(
   "/signin",
   loginValidator,
-  inputValidationMiddleware,
+  Validate,
   async (req: Request, res: Response) => {
     const { loginOrEmail, password } = req.body;
     const user = await usersService.checkCredentials(loginOrEmail, password);
