@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { usersService } from "../domain/usersService";
 import { HTTP_STATUSES } from "../http_statuses";
 import { createValidator } from "../validators/createValidator";
-import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
+import { Validate } from "../middlewares/Validate";
 import { SECRET_ACCESS_TOKEN } from "../config";
 import { usersQueryRepo } from "../repositories/usersQueryRepo";
 import { UsersListViewModel } from "../models/users/UserViewModel";
@@ -31,7 +31,7 @@ usersRouter.get(
 usersRouter.post(
   "/signup",
   createValidator,
-  inputValidationMiddleware,
+  Validate,
   async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
     const user = await usersService.createUser(username, email, password);

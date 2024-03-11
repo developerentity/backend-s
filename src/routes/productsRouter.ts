@@ -15,7 +15,7 @@ import {
 import { URIParamsProductIDModel } from "../models/products/URIParamsProductIDModel";
 import { HTTP_STATUSES } from "../http_statuses";
 import { titleValidator } from "../validators/titleValidator";
-import { inputValidationMiddleware } from "../validators/inputValidationMiddleware";
+import { Validate } from "../middlewares/Validate";
 import { productsService } from "../domain/productsService";
 import { productsQueryRepo } from "../repositories/productsQueryRepo";
 import { basicTokenValidator } from "../middlewares/basicTokenValidator";
@@ -63,7 +63,7 @@ productsRouter.post(
   "/",
   basicTokenValidator,
   titleValidator,
-  inputValidationMiddleware,
+  Validate,
   async (
     req: RequestWithBody<CreateProductModel>,
     res: Response<ProductViewModel>
@@ -81,7 +81,7 @@ productsRouter.put(
   "/:id",
   basicTokenValidator,
   titleValidator,
-  inputValidationMiddleware,
+  Validate,
   async (
     req: RequestWithParamsAndBody<URIParamsProductIDModel, UpdateProductModel>,
     res: Response<ProductViewModel>
