@@ -6,9 +6,9 @@ import { createValidator } from "../validators/createValidator";
 import { Validate } from "../middlewares/Validate";
 import { usersQueryRepo } from "../repositories/usersQueryRepo";
 import { UsersListViewModel } from "../models/users/UserViewModel";
-import { RequestWithQuery } from "../types";
 import { QueryUsersModel } from "../models/users/QueryUsersModel";
 import { jwtService } from "../application /jwtService";
+import { RequestWithQuery } from "../types/request-types";
 
 export const usersRouter = Router({});
 
