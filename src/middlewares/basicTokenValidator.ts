@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
 import { HTTP_STATUSES } from "../http_statuses";
-import { SECRET_ACCESS_TOKEN } from "../config";
+import { jwtService } from "../application /jwtService";
+import { usersService } from "../domain/usersService";
 
-export function basicTokenValidator(
+export async function basicTokenValidator(
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,12 +15,14 @@ export function basicTokenValidator(
       .status(HTTP_STATUSES.UNAUTHORIZED_401)
       .json({ error: "Unauthorized" });
   }
-  try {
-    jwt.verify(token, SECRET_ACCESS_TOKEN!);
-    next();
-  } catch (error) {
+  const userId = await jwtService.getUserIdByToken(token);
+
+  if (!userId) {
     return res
       .status(HTTP_STATUSES.UNAUTHORIZED_401)
       .json({ error: "Unauthorized" });
+  } else {
+    req.user = await usersService.findUserById(userId);
+    next();
   }
 }
