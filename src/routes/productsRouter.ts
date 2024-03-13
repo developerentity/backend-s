@@ -1,10 +1,5 @@
 import express, { Response } from "express";
-import {
-  RequestWithBody,
-  RequestWithParams,
-  RequestWithParamsAndBody,
-  RequestWithQuery,
-} from "../types";
+
 import { CreateProductModel } from "../models/products/CreateProductModel";
 import { UpdateProductModel } from "../models/products/UpdateProductModel";
 import { QueryProductModel } from "../models/products/QueryProductModel";
@@ -19,6 +14,12 @@ import { Validate } from "../middlewares/Validate";
 import { productsService } from "../domain/productsService";
 import { productsQueryRepo } from "../repositories/productsQueryRepo";
 import { basicTokenValidator } from "../middlewares/basicTokenValidator";
+import {
+  RequestWithBody,
+  RequestWithParams,
+  RequestWithParamsAndBody,
+  RequestWithQuery,
+} from "../types/request-types";
 
 /**
  * This is the Presentation Layer

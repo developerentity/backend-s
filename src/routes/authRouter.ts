@@ -1,11 +1,9 @@
 import { Router, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
 import { usersService } from "../domain/usersService";
 import { HTTP_STATUSES } from "../http_statuses";
 import { loginValidator } from "../validators/loginValidator";
 import { Validate } from "../middlewares/Validate";
-import { SECRET_ACCESS_TOKEN } from "../config";
 import { jwtService } from "../application /jwtService";
 
 export const authRouter = Router({});

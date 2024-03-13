@@ -2,10 +2,10 @@ import express, { Response } from "express";
 
 import { HTTP_STATUSES } from "../http_statuses";
 import { addressesRepository } from "../repositories/addressesRepository";
-import { RequestWithParams, RequestWithQuery } from "../types";
 import { QueryAddressModel } from "../models/addresses/QueryAddressModel";
 import { AddressViewModel } from "../models/addresses/AddressViewMode";
 import { URIParamsAddressIDModel } from "../models/addresses/URIParamsAddressIDModel";
+import { RequestWithParams, RequestWithQuery } from "../types/request-types";
 
 export const addressesRouter = express.Router({});
 
