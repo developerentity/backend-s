@@ -1,15 +1,14 @@
 import { Request, Router, Response } from "express";
-import jwt from "jsonwebtoken";
 
 import { usersService } from "../domain/usersService";
 import { HTTP_STATUSES } from "../http_statuses";
 import { createValidator } from "../validators/createValidator";
 import { Validate } from "../middlewares/Validate";
-import { SECRET_ACCESS_TOKEN } from "../config";
 import { usersQueryRepo } from "../repositories/usersQueryRepo";
 import { UsersListViewModel } from "../models/users/UserViewModel";
 import { RequestWithQuery } from "../types";
 import { QueryUsersModel } from "../models/users/QueryUsersModel";
+import { jwtService } from "../application /jwtService";
 
 export const usersRouter = Router({});
 
@@ -37,11 +36,7 @@ usersRouter.post(
     const user = await usersService.createUser(username, email, password);
     if (user) {
       const maxAge = 3 * 60 * 60;
-      const token = jwt.sign(
-        { id: user._id, email, role: user.role },
-        SECRET_ACCESS_TOKEN!,
-        { expiresIn: maxAge }
-      );
+      const token = jwtService.createJWT(user);
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: maxAge * 1000,

@@ -6,6 +6,7 @@ import { HTTP_STATUSES } from "../http_statuses";
 import { loginValidator } from "../validators/loginValidator";
 import { Validate } from "../middlewares/Validate";
 import { SECRET_ACCESS_TOKEN } from "../config";
+import { jwtService } from "../application /jwtService";
 
 export const authRouter = Router({});
 
@@ -18,11 +19,7 @@ authRouter.post(
     const user = await usersService.checkCredentials(loginOrEmail, password);
     if (user) {
       const maxAge = 3 * 60 * 60;
-      const token = jwt.sign(
-        { id: user._id, loginOrEmail, role: user.role },
-        SECRET_ACCESS_TOKEN!,
-        { expiresIn: maxAge }
-      );
+      const token = jwtService.createJWT(user);
       res.cookie("token", token, {
         httpOnly: true,
         maxAge: maxAge * 1000,

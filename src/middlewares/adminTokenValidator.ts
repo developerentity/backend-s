@@ -1,40 +1,42 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
 
 import { HTTP_STATUSES } from "../http_statuses";
-import { SECRET_ACCESS_TOKEN } from "../config";
+import { jwtService } from "../application /jwtService";
+import { usersService } from "../domain/usersService";
 
-interface DecodedToken extends JwtPayload {
-  role: "basic" | "admin";
-}
-
-export function adminTokenValidator(
+export async function adminTokenValidator(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const token = req.cookies.token;
   if (!token) {
-    debugger;
     return res
       .status(HTTP_STATUSES.UNAUTHORIZED_401)
       .json({ error: "Unauthorized" });
   }
-  try {
-    const decodedToken = jwt.verify(
-      token,
-      SECRET_ACCESS_TOKEN!
-    ) as DecodedToken;
-    if (decodedToken.role !== "admin") {
-      return res
-        .status(HTTP_STATUSES.UNAUTHORIZED_401)
-        .json({ error: "Unauthorized" });
-    } else {
-      next();
-    }
-  } catch (error) {
+
+  const userId = await jwtService.getUserIdByToken(token);
+
+  if (!userId) {
     return res
       .status(HTTP_STATUSES.UNAUTHORIZED_401)
       .json({ error: "Unauthorized" });
+  } else {
+    try {
+      const user = await usersService.findUserById(userId);
+      if (user?.role !== "admin") {
+        return res
+          .status(HTTP_STATUSES.UNAUTHORIZED_401)
+          .json({ error: "Unauthorized" });
+      } else {
+        req.user = user;
+        next();
+      }
+    } catch {
+      return res
+        .status(HTTP_STATUSES.UNAUTHORIZED_401)
+        .json({ error: "Unauthorized" });
+    }
   }
 }
